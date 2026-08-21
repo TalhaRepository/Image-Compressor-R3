@@ -8,8 +8,7 @@ export function Header() {
           <ShieldCheck className="w-5 h-5 text-charcoal" strokeWidth={2.2} />
         </div>
         <div className="min-w-0">
-          <p className="text-[13px] sm:text-sm font-bold text-white leading-tight truncate">
-            <span className="mr-1">🔒</span>100% Private — Images Never Leave Your Device
+          <p className="text-[13px] sm:text-sm font-bold text-white truncate"> 100% Private - Images Never Leave Your Device
           </p>
           <p className="hidden sm:block text-[11px] text-bronze-300 leading-tight">
             All compression runs locally in your browser
