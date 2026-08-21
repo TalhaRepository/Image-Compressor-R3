@@ -158,6 +158,12 @@ export async function downloadImageToDevice(input: string | Blob, fileName: stri
         albumIdentifier,
         fileName: stripExtension(fileName),
       });
+      await Toast.show({
+  text: 'Image successfully saved!',
+  duration: 'short',
+  position: 'bottom',
+});
+          
       return 'saved';
     } catch (pluginErr) {
       console.warn('Native gallery save failed, using native share fallback', pluginErr);
