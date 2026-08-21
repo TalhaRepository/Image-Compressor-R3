@@ -1,0 +1,76 @@
+name: Build Android Release
+
+on:
+  push:
+    branches: [ main, master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Setup Java JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '21'
+
+      - name: Install Dependencies
+        run: npm install --legacy-peer-deps
+
+      - name: Build Web App
+        run: npm run build
+
+      - name: Add Android Platform & Sync Capacitor
+        run: |
+          npx cap add android
+          npx cap sync android
+
+          # Keep Capacitor's generated Android project intact while resolving
+          # the Kotlin stdlib duplicate-class conflict.
+          cat << 'EOF_KOTLIN' >> android/build.gradle
+
+          subprojects {
+              configurations.all {
+                  resolutionStrategy {
+                      force "org.jetbrains.kotlin:kotlin-stdlib:1.9.22"
+                      force "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.22"
+                      force "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.9.22"
+                  }
+              }
+          }
+          EOF_KOTLIN
+
+      - name: Inject AdMob Metadata
+        run: |
+          MANIFEST="android/app/src/main/AndroidManifest.xml"
+
+          # Capacitor generates the correct application/activity structure.
+          # Do not replace that manifest; only add the existing AdMob metadata.
+          if ! grep -q 'com.google.android.gms.ads.APPLICATION_ID' "$MANIFEST"; then
+            sed -i '/<\/application>/i\        <meta-data android:name="com.google.android.gms.ads.APPLICATION_ID" android:value="ca-app-pub-6956987079427706~5609210977" />' "$MANIFEST"
+          fi
+
+      - name: Build Both APK and AAB
+        run: |
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleRelease bundleRelease --no-daemon
+
+      - name: Upload APK (For direct phone testing)
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release-apk
+          path: android/app/build/outputs/apk/release/app-release-unsigned.apk
+
+      - name: Upload AAB (For Google Play Store)
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release-aab
+          path: android/app/build/outputs/bundle/release/app-release.aab
+          
