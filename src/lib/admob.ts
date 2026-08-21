@@ -1,4 +1,4 @@
-import { AdMob, AdSize, Position } from '@capacitor-community/admob';
+import { AdMob } from '@capacitor-community/admob';
 
 export const BANNER_AD_ID = 'ca-app-pub-6956987079427706/2871366998';
 export const INTERSTITIAL_AD_ID = 'ca-app-pub-6956987079427706/6778822415';
@@ -9,8 +9,8 @@ export const initializeAds = async () => {
     await AdMob.initialize();
     await AdMob.showBanner({
       adId: BANNER_AD_ID,
-      adSize: AdSize.BANNER,
-      position: Position.BOTTOM_CENTER,
+      adSize: 'BANNER',
+      position: 'BOTTOM_CENTER',
       margin: 0,
     });
   } catch (error) {
@@ -29,4 +29,3 @@ export const showInterstitialAd = async () => {
     console.error('Interstitial ad failed', error);
   }
 };
-  
