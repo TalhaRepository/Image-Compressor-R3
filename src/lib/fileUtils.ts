@@ -2,7 +2,7 @@ import { Capacitor } from '@capacitor/core';
 import { Filesystem, Directory } from '@capacitor/filesystem';
 import { Share } from '@capacitor/share';
 import { Media } from '@capacitor-community/media';
-
+import { Toast } from '@capacitor/toast';
 // Read a File as a data URL (for in-browser preview)
 export function fileToDataUrl(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
