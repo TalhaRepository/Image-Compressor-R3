@@ -228,6 +228,8 @@ export default function App() {
         {/* Results */}
         {results.length > 0 && (
           <section className="space-y-3 animate-fade-in">
+                    <p className="text-xs text-gray-400 text-center mb-2 px-4"> Press Middle ⬇️ Download button to Save to your Phone Storage
+        </p>
             <div className="flex items-center justify-between">
               <h2 className="flex items-center gap-2 text-sm font-extrabold text-white">
                 <span className="w-2 h-2 rounded-full bg-cyan-accent animate-pulse-soft" />
