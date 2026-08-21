@@ -14,8 +14,14 @@ import { PickedImage, CompressionResultItem } from '@/lib/types';
 import { compressImage, dataUrlSizeBytes, naturalSizeOf, PRESETS, CropRect } from '@/lib/compress';
 import { fileToDataUrl, uid } from '@/lib/fileUtils';
 import { Cpu, Sparkles, Trash2, AlertCircle } from 'lucide-react';
-
+import { useEffect } from 'react';
+import { initializeAds, showInterstitialAd } from './lib/admob';
+  
 export default function App() {
+    useEffect(() => {
+    initializeAds();
+  }, []);
+  
   const [mode, setMode] = useState<Mode>('target');
   const [targetKB, setTargetKB] = useState('50');
   const [quality, setQuality] = useState(80);
@@ -143,6 +149,8 @@ export default function App() {
         await new Promise((r) => setTimeout(r, 10));
       }
       setResults(out);
+      await showInterstitialAd();
+    
     } catch (e) {
       setError('Compression failed for one or more images. They may be too large — try fewer or smaller images.');
     } finally {
