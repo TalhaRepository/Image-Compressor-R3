@@ -69,13 +69,13 @@ jobs:
             -storepass "${{ secrets.KEYSTORE_PASSWORD }}" \
             -keypass "${{ secrets.KEY_PASSWORD }}" \
             android/app/build/outputs/bundle/release/app-release.aab ${{ secrets.KEY_ALIAS }}
-                  - name: Sign APK File
+
+      - name: Sign APK File
         run: |
-          apksigner sign --ks android/app/release.jks \
-            --ks-pass pass:"${{ secrets.KEYSTORE_PASSWORD }}" \
-            --key-pass pass:"${{ secrets.KEY_PASSWORD }}" \
-            --ks-key-alias ${{ secrets.KEY_ALIAS }} \
-            android/app/build/outputs/apk/release/app-release-unsigned.apk
+          jarsigner -keystore android/app/release.jks \
+            -storepass "${{ secrets.KEYSTORE_PASSWORD }}" \
+            -keypass "${{ secrets.KEY_PASSWORD }}" \
+            android/app/build/outputs/apk/release/app-release-unsigned.apk ${{ secrets.KEY_ALIAS }}
             
       - name: Upload APK (For direct phone testing)
         uses: actions/upload-artifact@v4
