@@ -59,7 +59,17 @@ jobs:
           cd android
           chmod +x gradlew
           ./gradlew assembleRelease bundleRelease --no-daemon
+      - name: Decode Keystore
+        run: |
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > android/app/release.jks
 
+      - name: Sign AAB File
+        run: |
+          jarsigner -keystore android/app/release.jks \
+            -storepass "${{ secrets.KEYSTORE_PASSWORD }}" \
+            -keypass "${{ secrets.KEY_PASSWORD }}" \
+            android/app/build/outputs/bundle/release/app-release.aab ${{ secrets.KEY_ALIAS }}
+            
       - name: Upload APK (For direct phone testing)
         uses: actions/upload-artifact@v4
         with:
